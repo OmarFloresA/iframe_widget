@@ -17,6 +17,7 @@
             'iframe_widget/static/src/xml/iframe_url_widget.xml',
         ],
     },
+    'images': ['static/description/banner.jpg'],
     'installable': True,
     'application': False,
     'auto_install': False,
