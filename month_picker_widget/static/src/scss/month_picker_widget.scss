@@ -1,0 +1,151 @@
+.o_field_month_picker {
+    width: 100%;
+
+    // ── Modo solo lectura ───────────────────────────────────────────────────────
+    .o_month_picker_readonly {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 14px;
+    }
+
+    // ── Contenedor principal (edición) ─────────────────────────────────────────
+    .o_month_picker_container {
+        position: relative;
+        width: 100%;
+    }
+
+    // ── Campo disparador ───────────────────────────────────────────────────────
+    .o_month_picker_trigger {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 10px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background: #fff;
+        cursor: pointer;
+        min-height: 34px;
+        user-select: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+
+        &:hover {
+            border-color: #adb5bd;
+        }
+
+        &--open {
+            border-color: #875a7b;
+            box-shadow: 0 0 0 3px rgba(135, 90, 123, 0.15);
+        }
+    }
+
+    .o_month_picker_icon {
+        color: #875a7b;
+        flex-shrink: 0;
+    }
+
+    .o_month_picker_value {
+        flex: 1;
+        font-size: 14px;
+        color: #212529;
+    }
+
+    .o_month_picker_placeholder {
+        flex: 1;
+        font-size: 14px;
+        color: #adb5bd;
+    }
+
+    .o_month_picker_actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #adb5bd;
+        flex-shrink: 0;
+    }
+
+    .o_month_picker_clear {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        color: #adb5bd;
+        line-height: 1;
+
+        &:hover {
+            color: #6c757d;
+        }
+    }
+
+    .o_month_picker_chevron {
+        font-size: 11px;
+    }
+
+    // ── Dropdown ───────────────────────────────────────────────────────────────
+    .o_month_picker_dropdown {
+        position: absolute;
+        top: calc(100% + 4px);
+        left: 0;
+        z-index: 1050;
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+        padding: 10px;
+        min-width: 260px;
+    }
+
+    // ── Grilla de meses (3 columnas × 4 filas) ─────────────────────────────────
+    .o_month_picker_grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+    }
+
+    .o_month_picker_item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 6px;
+        border: 1px solid transparent;
+        border-radius: 5px;
+        background: none;
+        cursor: pointer;
+        transition: background 0.12s, border-color 0.12s, color 0.12s;
+
+        &:hover {
+            background: #f3eaf6;
+            border-color: #c09ec8;
+            color: #6d4861;
+        }
+
+        &--selected {
+            background: #875a7b;
+            border-color: #875a7b;
+            color: #fff;
+
+            &:hover {
+                background: #6d4861;
+                border-color: #6d4861;
+            }
+        }
+    }
+
+    .o_month_short {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        line-height: 1;
+    }
+
+    .o_month_full {
+        font-size: 11px;
+        line-height: 1.4;
+        color: inherit;
+        opacity: 0.75;
+    }
+}

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="month_picker_widget.MonthPickerWidget">
+        <div class="o_field_month_picker">
+
+            <!-- Modo solo lectura -->
+            <t t-if="props.readonly">
+                <span class="o_month_picker_readonly">
+                    <t t-if="displayValue">
+                        <i class="fa fa-calendar-o me-1 text-muted"/>
+                        <t t-esc="displayValue"/>
+                    </t>
+                    <t t-else="">
+                        <span class="text-muted">—</span>
+                    </t>
+                </span>
+            </t>
+
+            <!-- Modo edición -->
+            <t t-else="">
+                <div class="o_month_picker_container" t-ref="container">
+
+                    <!-- Campo disparador -->
+                    <div
+                        class="o_month_picker_trigger"
+                        t-att-class="{ 'o_month_picker_trigger--open': state.isOpen }"
+                        t-on-click="toggleDropdown"
+                    >
+                        <i class="fa fa-calendar-o o_month_picker_icon"/>
+
+                        <span t-if="displayValue" class="o_month_picker_value" t-esc="displayValue"/>
+                        <span t-else="" class="o_month_picker_placeholder">Seleccionar mes...</span>
+
+                        <span class="o_month_picker_actions">
+                            <button
+                                t-if="displayValue"
+                                class="o_month_picker_clear"
+                                t-on-click="clearSelection"
+                                title="Limpiar selección"
+                                type="button"
+                            >
+                                <i class="fa fa-times"/>
+                            </button>
+                            <i
+                                class="fa o_month_picker_chevron"
+                                t-att-class="state.isOpen ? 'fa-chevron-up' : 'fa-chevron-down'"
+                            />
+                        </span>
+                    </div>
+
+                    <!-- Dropdown con la grilla de meses -->
+                    <div t-if="state.isOpen" class="o_month_picker_dropdown">
+                        <div class="o_month_picker_grid">
+                            <t t-foreach="months" t-as="month" t-key="month.number">
+                                <button
+                                    type="button"
+                                    class="o_month_picker_item"
+                                    t-att-class="{ 'o_month_picker_item--selected': isSelected(month) }"
+                                    t-on-click="() => this.selectMonth(month)"
+                                >
+                                    <span class="o_month_short" t-esc="month.name.substring(0, 3).toUpperCase()"/>
+                                    <span class="o_month_full" t-esc="month.name"/>
+                                </button>
+                            </t>
+                        </div>
+                    </div>
+
+                </div>
+            </t>
+
+        </div>
+    </t>
+</templates>
