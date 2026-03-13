@@ -1,0 +1,46 @@
+// ---------------------------------------------------------------------------
+// X2Many Search Bar – styles
+// Uses Bootstrap 5 / Odoo CSS custom properties where available.
+// ---------------------------------------------------------------------------
+
+.o_x2many_searchbar {
+    // Keep the bar aligned with the list content
+    padding-left: 0;
+    padding-right: 4px;
+
+    .input-group {
+        // Limit width so it doesn't dominate the panel
+        max-width: 380px;
+
+        .o_x2many_searchbar_icon {
+            background-color: var(--bs-body-bg, #fff);
+            border-right: 0;
+            color: var(--bs-secondary-color, #6c757d);
+        }
+
+        .o_x2many_searchbar_input {
+            border-left: 0;
+
+            &:focus {
+                // Prevent the blue focus ring from looking disconnected
+                box-shadow: none;
+                border-color: var(--bs-border-color, #dee2e6);
+            }
+
+            &::placeholder {
+                color: var(--bs-secondary-color, #6c757d);
+                opacity: 0.8;
+            }
+        }
+
+        .o_x2many_searchbar_clear {
+            border-left: 0;
+            color: var(--bs-secondary-color, #6c757d);
+
+            &:hover {
+                color: var(--bs-body-color, #212529);
+                background-color: transparent;
+            }
+        }
+    }
+}

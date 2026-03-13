@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+        Extends the standard X2ManyField template (web.X2ManyField) to:
+          1. Attach a t-ref to the root div so the JS can scope DOM queries.
+          2. Inject the search bar above the ListRenderer when show_searchbar="1".
+    -->
+    <t t-inherit="web.X2ManyField" t-inherit-mode="extension">
+
+        <!-- 1. Tag the root container so _applySearchFilter() can find rows -->
+        <xpath expr="//div[@t-att-class='className']" position="attributes">
+            <attribute name="t-ref">x2manySearchContainer</attribute>
+        </xpath>
+
+        <!-- 2. Insert the search bar just before the list renderer -->
+        <xpath expr="//ListRenderer[@t-if]" position="before">
+            <t t-if="props.showSearchBar and props.viewMode === 'list'">
+                <div class="o_x2many_searchbar mb-2 px-1">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text o_x2many_searchbar_icon">
+                            <i class="fa fa-search text-muted"/>
+                        </span>
+                        <input
+                            type="text"
+                            class="form-control o_x2many_searchbar_input"
+                            placeholder="Buscar..."
+                            t-att-value="searchState.query"
+                            t-on-input="onSearchInput"
+                        />
+                        <button
+                            t-if="searchState.query"
+                            type="button"
+                            class="btn btn-outline-secondary o_x2many_searchbar_clear"
+                            title="Limpiar búsqueda"
+                            t-on-click="onClearSearch"
+                        >
+                            <i class="fa fa-times"/>
+                        </button>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+
+    </t>
+
+</templates>
