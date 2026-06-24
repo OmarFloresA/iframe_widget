@@ -2,8 +2,9 @@
 
 import { NavBar } from "@web/webclient/navbar/navbar";
 import { patch } from "@web/core/utils/patch";
-import { useService } from "@web/core/utils/hooks";
-import { onMounted, onPatched } from "@odoo/owl";
+import { user, userBus } from "@web/core/user";
+import { session } from "@web/session";
+import { onMounted, onWillUnmount } from "@odoo/owl";
 
 /**
  * Paleta de colores estándar de Odoo (índices 0-11).
@@ -11,31 +12,29 @@ import { onMounted, onPatched } from "@odoo/owl";
  */
 const COLOR_MAP = {
     0: null,         // Sin color (usa el color por defecto)
-    1: "#F06050",    // Rojo
+    1: "#FF9B9B",    // Rojo
     2: "#F4A460",    // Arena/Naranja suave
-    3: "#F7CD1F",    // Amarillo
-    4: "#6CC1ED",    // Azul claro
-    5: "#814968",    // Púrpura
-    6: "#AFAFAF",    // Gris
-    7: "#30C381",    // Verde
-    8: "#9365B8",    // Violeta
-    9: "#3D73B9",    // Azul
-    10: "#0E7C7B",   // Verde azulado
-    11: "#DD5B5B",   // Rojo oscuro
+    3: "#FFE88B",    // Amarillo
+    4: "#ADFFFE",    // Azul claro
+    5: "#F17FDC",    // Púrpura
+    6: "#FFBAA1",    // Gris
+    7: "#67DEFA",    // Verde
+    8: "#7396EB",    // Violeta
+    9: "#FF71A7",    // Azul
+    10: "#7AFFC3",   // Verde azulado
+    11: "#CC90FE",   // Rojo oscuro
 };
 
 /**
  * Calcula si el texto sobre un color de fondo debe ser claro u oscuro
  * usando la fórmula de luminancia relativa (WCAG).
- * Devuelve true si el fondo es oscuro (texto debe ser blanco).
  */
 function isDarkColor(hexColor) {
     const hex = hexColor.replace("#", "");
     const r = parseInt(hex.substring(0, 2), 16);
     const g = parseInt(hex.substring(2, 4), 16);
     const b = parseInt(hex.substring(4, 6), 16);
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return luminance < 0.5;
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 < 0.5;
 }
 
 /**
@@ -47,10 +46,10 @@ function applyNavbarColor(hexColor) {
         return;
     }
     if (hexColor) {
+        const textColor = isDarkColor(hexColor) ? "#FFFFFF" : "#212529";
         navbar.style.backgroundColor = hexColor;
-        navbar.style.color = isDarkColor(hexColor) ? "#FFFFFF" : "#212529";
-        // Propagamos el color de texto a los iconos y links de la navbar
-        navbar.style.setProperty("--navbar-text-color", isDarkColor(hexColor) ? "#FFFFFF" : "#212529");
+        navbar.style.color = textColor;
+        navbar.style.setProperty("--navbar-text-color", textColor);
     } else {
         navbar.style.backgroundColor = "";
         navbar.style.color = "";
@@ -61,25 +60,17 @@ function applyNavbarColor(hexColor) {
 patch(NavBar.prototype, {
     setup() {
         super.setup();
-        this.companyService = useService("company");
-        this.orm = useService("orm");
 
-        const fetchAndApplyColor = async () => {
-            try {
-                const companyId = this.companyService.currentCompany.id;
-                const [company] = await this.orm.read(
-                    "res.company",
-                    [companyId],
-                    ["color"]
-                );
-                const hexColor = COLOR_MAP[company.color] || null;
-                applyNavbarColor(hexColor);
-            } catch {
-                // En caso de error no modificamos el color de la navbar
-            }
+        const applyColor = () => {
+            const companyId = user.activeCompany?.id;
+            const colorIndex = session.company_topbar_colors?.[companyId] ?? 0;
+            applyNavbarColor(COLOR_MAP[colorIndex] || null);
         };
 
-        onMounted(fetchAndApplyColor);
-        onPatched(fetchAndApplyColor);
+        onMounted(applyColor);
+        userBus.addEventListener("ACTIVE_COMPANIES_CHANGED", applyColor);
+        onWillUnmount(() => {
+            userBus.removeEventListener("ACTIVE_COMPANIES_CHANGED", applyColor);
+        });
     },
 });
